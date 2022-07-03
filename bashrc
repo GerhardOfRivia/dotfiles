@@ -63,9 +63,9 @@ Blu='\033[34m';
 Yel='\033[33m';
 
 if [ "$color_prompt" = yes ]; then
-    PS1="${RCol}┌─[\`if [ \$? = 0 ]; then echo "${Gre}"; else echo "${Red}"; fi\`\t\[${Rcol}\] \[${Blu}\]\h\[${RCol}\] \[${Yel}\]\w\[${RCol}\]]\n└─╼ \$ "
+    PS1="${RCol}[\`if [ \$? = 0 ]; then echo "${Gre}"; else echo "${Red}"; fi\`\t\[${Rcol}\] \[${Blu}\]\h\[${RCol}\] \[${Yel}\]\w\[${RCol}\]]\n ─╼ \$ "
 else
-    PS1="${RCol}┌─[\t\] \h \w\]]\n└─╼ \$ "
+    PS1="${RCol}[\t\] \h \w\]]\n ─╼ \$ "
 fi
 unset color_prompt force_color_prompt
 

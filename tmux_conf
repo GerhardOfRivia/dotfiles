@@ -8,32 +8,14 @@
 # useful if for example you want to display the current weather in your tmux
 # status bar.
 
-# Weather data reference: http://api.wunderground.com/api/<<your API key goes here with no brackets>>/conditions/q/<<zip code>>.json
-# WUNDERGROUND API KEY (place yours here)
-API_KEY="foo"
-ZIP_CODE="bar"
+API_KEY=""
+ZIP_CODE="80301"
 COF_LOC="${HOME}/.tmux/"
 
 set -e
 mkdir -p $COF_LOC
 
-
-if [ -f ${COF_LOC}${ZIP_CODE}.json ]; then
-        DATA_TIME=$(find ${COF_LOC}${ZIP_CODE}.json -cmin -120)
-fi
-
-if ! [ -z "$DATA_TIME" ]; then
-        awk 'NR==1 {printf "%s", $0; exit}' ${COF_LOC}${ZIP_CODE}.nfo
-        exit 0
-else
-        curl --silent http://api.wunderground.com/api/${API_KEY}/conditions/q/${ZIP_CODE}.json -o ${COF_LOC}${ZIP_CODE}.json
-fi
-
-DATA=$(cat ${COF_LOC}${ZIP_CODE}.json)
-CITY=$(echo "$DATA" | grep '"city":' | head -n1 | cut -d':' -f2 | tr -d ',"()')
-CATEGORY=$(echo "$DATA" | grep '"weather":' | cut -d':' -f2 | tr -d ',"()')
-TEMP=$(echo "$DATA" | grep '"temperature_string":' | cut -d':' -f2 | tr -d ',"()')
-RET="[ $(hostname) ] $CITY : $CATEGORY | $TEMP | ☢"
+RET="[ $(hostname) ] ☢"
 
 printf "%s" "$RET" | tee ${COF_LOC}${ZIP_CODE}.nfo
 
