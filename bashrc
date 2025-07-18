@@ -57,15 +57,30 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 RCol='\033[0m'
-Gre='\033[32m';
-Red='\033[31m';
-Blu='\033[34m';
-Yel='\033[33m';
+Gre='\033[32m'
+Red='\033[31m'
+Blu='\033[34m'
+Yel='\033[33m'
+
+show_git_info() {
+    repo=$(git remote -v 2> /dev/null | head -n1 | awk '{print $2}' | awk -F '/' '{print $NF}' | cut -d'.' -f1)
+    branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
+    [ -n "${repo}" ] && [ -n "${branch}" ] && echo "${repo}/${branch}" | sed -e 's/\(.*\)/ (\1)/'
+}
+
+show_git_color() {
+    change=$(git status --porcelain 2> /dev/null)
+    [ -z "${change}" ] && echo -e "${Gre}" || echo -e "${Red}"
+}
+
+show_error_color() {
+    [ $? = 0 ] && echo -e "${Gre}" || echo -e "${Red}"
+}
 
 if [ "$color_prompt" = yes ]; then
-    PS1="${RCol}[\`if [ \$? = 0 ]; then echo "${Gre}"; else echo "${Red}"; fi\`\t\[${Rcol}\] \[${Blu}\]\h\[${RCol}\] \[${Yel}\]\w\[${RCol}\]]\n ─╼ \$ "
+    PS1="[\[\$(show_error_color)\]\t\[${Rcol}\] \[${Blu}\]\h\[${RCol}\] \[${Yel}\]\w\[${RCol}\]]\[\$(show_git_color)\]\$(show_git_info)\[${RCol}\]\n - \$ "
 else
-    PS1="${RCol}[\t\] \h \w\]]\n ─╼ \$ "
+    PS1="[\t \h \w]\n - \$ "
 fi
 unset color_prompt force_color_prompt
 
